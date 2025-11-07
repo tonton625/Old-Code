@@ -1,0 +1,125 @@
+#define F_CPU 16000000UL
+#define BAUD 9600
+#define BAUDRATE ((F_CPU)/(BAUD*16UL)-1)     // Baud Rate value for UBRR
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+void delay(int d);
+
+int main(void)
+{	
+	DDRB &= ~(1 << DDRB7); //initialize button
+	DDRB |= (1 << DDRB5);
+	PORTB |= (1 << PORTB7); //pull up
+    
+	//int dayTime = 0;	int nightTime = 0;
+	
+	while (1) 
+	{
+		//PART 2 
+		// TURNING THE LED ON WITH LAG
+		while (!(PINB & (1 <<PINB7))) //button is pressed 
+		{
+			OCR0A = 0x9C; //represents 10ms timer (total time)
+			OCR0B = 0x08; //represents 10% duty cycle
+			
+			while (OCR0B <= (OCR0A - 0x08))
+			{
+				TCCR0A |= (1 << WGM01); //Set timer to CTC 
+				
+				PORTB |= (1 << PORTB5); //Turn on LED 
+				TCCR0B |= (1 << CS02) | (1 << CS00); //set pre-scaler
+				while (((TIFR0 & (1<< OCF0B)) == 0) && (!(PINB & (1 <<PINB7)))); //checking for over flow and the pin being pressed 
+			
+				TIFR0 |= (1 << OCF0B); //reset overflow
+				PORTB &= (1 << PORTB); //Turn off LED 
+				
+				while (((TIFR0 & (1<< OCF0A)) == 0) && (!(PINB & (1 <<PINB7))));
+				TIFR0 |= (1 << OCF0A); //reset overflow 
+				
+				OCR0B += 0x08;
+			}
+			while (!(PINB & (1 << PINB7))){
+				PORTB |= (1 << PORTB5) ;
+			}
+		}
+		
+		//TURN OFF LED WITH LAG
+		if (OCR0B >= 0x08)
+		{
+			OCR0A = 0x9C; //represents 10ms timer (total time)
+			
+			while (OCR0B > 0x08)
+			{
+				TCCR0A |= (1 << WGM01); //Set timer to CTC
+				
+				PORTB |= (1 << PORTB5); //Turn on LED
+				TCCR0B |= (1 << CS02) | (1 << CS00); //set pre-scaler
+				while (((TIFR0 & (1<< OCF0B)) == 0)); //checking for over flow
+				
+				TIFR0 |= (1 << OCF0B); //reset overflow
+				PORTB &= ~(1 << PORTB5); //Turn off LED
+				
+				while (((TIFR0 & (1<< OCF0A)) == 0) );
+				TIFR0 |= (1 << OCF0A); //reset overflow
+				
+				if (OCR0B <= 0x10)	 
+				{OCR0B = 0x08;}
+				else				 
+				{OCR0B -= 0x08;}
+			}	
+		}
+		else {PORTB &= ~(1 << PORTB5);}
+	}
+}
+		
+		 //TURN LED OFF WITH LAG
+		
+
+	/*
+		CHECKPOINT
+		while (!(PINB & (1 << PINB7))) //button is pressed 
+		{
+			dayTime = 1; //on for 10 ms
+			nightTime = 9;  //off for 90 ms
+		
+			while (dayTime <= 10 && !(PINB & (1 <<PINB7)))
+			{
+				PORTB |= (1 << PORTB5); //turn on LED
+				delay(dayTime);
+				PORTB &= ~(1 << PORTB5); //turn off LED
+				delay(nightTime);
+				
+				dayTime = dayTime + 1;
+				nightTime = nightTime - 1;
+			}
+			while (!(PINB & (1 <<PINB7)))
+				{PORTB |= (1 << PORTB5);}
+			
+			if (dayTime >= 0)
+			{
+				while (nightTime <= 10)
+				{
+				PORTB |= (1 << PORTB5); //turn on LED
+				delay(dayTime);
+				PORTB &= ~(1 << PORTB5); //turn off LED
+				delay(nightTime);
+				
+				dayTime = dayTime - 1;
+				nightTime = nightTime + 1;
+				}
+			}
+		}
+    }
+}
+
+void delay(int d)
+{
+	while (d > 0)
+	{
+		_delay_ms(1);
+		d = d - 1;
+	}
+}
+*/
