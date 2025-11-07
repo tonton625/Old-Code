@@ -1,0 +1,37 @@
+#define F_CPU 16000000UL
+#define BAUD 9600                                  
+#define BAUDRATE ((F_CPU)/(BAUD*16UL)-1)            // Baud Rate value for UBRR
+#include <avr/io.h>
+#include <util/delay.h>
+
+
+// function to initialize UART
+void uart_init (void)
+{
+	UBRR0H = (BAUDRATE>>8);                      // shift the register right by 8 bits
+	UBRR0L = BAUDRATE;                           // set baud rate
+	UCSR0B|= (1<<TXEN0)|(1<<RXEN0);                // enable receiver and transmitter
+	UCSR0C|= (1<<UCSZ00)|(1<<UCSZ01);   // 8bit data format
+}
+
+void uart_transmit(unsigned char data){
+	while (!( UCSR0A & (1<<UDRE0)));                // wait while register is free
+	UDR0 = data;
+}
+
+int main(void)
+{
+	unsigned char data[]= "820613567\r\n";
+	uart_init();
+	
+    while (1) 
+    {
+		for(int i = 0; i < 11; i++) {
+			uart_transmit(data[i]);
+			_delay_ms(500);
+		}
+	}
+}
+
+
+
