@@ -1,0 +1,15 @@
+
+int main(void)
+{
+	while (1)
+	{
+		DDRB |= (1<<DDB5);  //DDB5 is the output for the light. - this set the data direction towards it 
+		while(1){//never turns off the blink
+			PORTB |= (1<<PORTB5); //Turns on the LED by setting 1 to port B5
+			_delay_ms(100);  //delay 100ms for the blinking effect
+			PORTB &= ~(1<<PORTB5); //Turns off the LED by setting B5 to 0
+			_delay_ms(100); //delay for blinking effect
+		}
+		
+	}
+}
