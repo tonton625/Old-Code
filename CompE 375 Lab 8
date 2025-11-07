@@ -1,0 +1,169 @@
+#include "stm32f0xx.h"
+#include "stm32f0xx_gpio.h"
+#include "stm32f0xx_rcc.h"
+#define USE_STDPERIPH_DRIVER
+#define m 100000
+
+void delay();
+void dot();
+void dash();
+void space();
+void wordspace();
+int i = 0;
+
+int main(void){
+  RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+  GPIOC-> MODER |= 0x01<< (2*8);
+  GPIOC-> OTYPER |= 0x00<< (8);
+  GPIOC-> OSPEEDR |= 0x02<< (2*8);
+  GPIOC-> PUPDR |= 0x00 << (2*8);
+     
+        
+    while (1) { //infinite loop
+	char name[50] = {"Winston Liew 820613567"};
+		for (i = 0; i <= 50; i++)
+		{
+			if (name[i] == 0){//loops the program
+				i = 0;}
+                        
+			if (name[i] == 'A' || name[i] == 'a'){  //Morse code for letter A
+				dot(); dash(); space();}
+			
+			if (name[i] == 'B' || name[i] == 'b'){  //Morse code for letter B
+				dash(); dot(); dot(); dot(); space();}
+			
+			if (name[i] == 'C' || name[i] == 'c'){  //Morse code for letter C
+				dash(); dot(); dash(); dot(); space();}
+			
+			if (name[i] == 'D' || name[i] == 'd'){  //Morse code for letter D
+				dash(); dot(); dot(); space();}
+			
+			if (name[i] == 'E' || name[i] == 'e'){  //Morse code for letter E
+				dot(); space();}
+			
+			if (name[i] == 'F' || name[i] == 'f'){  //Morse code for letter F
+				dot(); dot(); dash(); dot(); space();}
+			
+			if (name[i] == 'G' || name[i] == 'g'){  //Morse code for letter G
+				dash(); dash(); dot(); space();}
+			
+			if (name[i] == 'H' || name[i] == 'h'){  //Morse code for letter H
+				dot(); dot(); dot(); dot(); space();}
+			
+			if (name[i] == 'I' || name[i] == 'i'){  //Morse code for letter I
+				dot(); dot(); space();}
+			
+			if (name[i] == 'J' || name[i] == 'j'){  //Morse code for letter J
+				dot(); dash(); dash(); dash(); space();}
+			
+			if (name[i] == 'K' || name[i] == 'k'){  //Morse code for letter K
+				dash(); dot(); dash(); space();}
+			
+			if (name[i] == 'L' || name[i] == 'l'){  //Morse code for letter L
+				dot(); dash(); dot(); dot(); space();}
+			
+			if (name[i] == 'M' || name[i] == 'm'){  //Morse code for letter M
+				dash(); dash(); space();}
+                        
+			if (name[i] == 'N' || name[i] == 'n'){  //Morse code for letter N
+				dash(); dot(); space();}
+			
+			if (name[i] == 'O' || name[i] == 'o'){  //Morse code for letter O
+				dash(); dash(); dash(); space();}
+				
+			if (name[i] == 'P' || name[i] == 'p'){  //Morse code for letter P
+				dot(); dash(); dash(); dot(); space();}
+				
+			if (name[i] == 'Q' || name[i] == 'q'){  //Morse code for letter Q
+				dash(); dash(); dot();  dash(); space();}
+				
+			if (name[i] == 'R' || name[i] == 'r'){  //Morse code for letter R
+                          dot(); dash(); dot(); space();}				}
+				
+			if (name[i] == 'S' || name[i] == 's'){  //Morse code for letter S
+				dot(); dot(); dot(); space();}
+			
+			if (name[i] == 'T' || name[i] == 't'){  //Morse code for letter T
+				dash(); space();}
+				
+			if (name[i] == 'U' || name[i] == 'u'){  //Morse code for letter U
+				dot(); dot(); dash();  space();}
+				
+			if (name[i] == 'V' || name[i] == 'v'){  //Morse code for letter V
+				dot(); dot(); dot(); dash(); space();}
+				
+			if (name[i] == 'W' || name[i] == 'w'){  //Morse code for letter W
+				dot(); dash(); dash(); space();}
+				
+			if (name[i] == 'X' || name[i] == 'x'){  //Morse code for letter X
+				dash(); dot(); dot(); dash(); space();}
+				
+			if (name[i] == 'Y' || name[i] == 'y'){  //Morse code for letter Y
+				dash(); dot(); dash(); dash(); space();}
+				
+			if (name[i] == 'Z' || name[i] == 'z'){  //Morse code for letter Z
+				dash(); dash(); dot(); dot(); space();}
+				
+			if (name[i] == '0' ){  //Morse code for number 0
+				dash(); dash(); dash(); dash(); dash(); space();}
+				
+			if (name[i] == '1'){  //Morse code for number 1
+				dot(); dash(); dash(); dash(); dash(); space();}
+				
+			if (name[i] == '2'){  //Morse code for number 2
+				dot(); dot(); dash(); dash(); dash(); space();}
+				
+			if (name[i] == '3'){  //Morse code for number 3
+				dot(); dot(); dot(); dash(); dash(); space();}
+				
+			if (name[i] == '4'){  //Morse code for number 4
+				dot(); dot(); dot(); dot(); dash(); space();}
+				
+			if (name[i] == '5'){  //Morse code for number 5
+				dot(); dot(); dot(); dot(); dot(); space();}
+				
+			if (name[i] == '6'){  //Morse code for number 6
+				dash(); dot(); dot(); dot(); dot(); space();}
+				
+			if (name[i] == '7'){  //Morse code for number 7
+				dash(); dash(); dot(); dot(); dot(); space();}
+				
+			if (name[i] == '8'){  //Morse code for number 8
+				dash(); dash(); dash(); dot(); dot(); space();}
+				
+			if (name[i] == '9'){  //Morse code for number 9
+				dash(); dash(); dash(); dash(); dot(); space();}
+				
+			if (name[i] == ' '){
+				wordspace();}
+		}
+    }
+
+void delay(int s){
+      while (s > 0) 
+        s--;
+}
+
+void dot(){
+	GPIOC->ODR |= 0x01<<8; //turns on LED
+	delay(2*m); //one dot
+	GPIOC->ODR &= ~(0x01<<8);
+	delay(2*m);
+}
+
+void dash(){
+	GPIOC->ODR |= 0x01<<8; //turns on LED
+	delay(6*m); //one dash
+	GPIOC->ODR &= ~(0x01<<8);
+	delay(2*m);	
+}
+
+void space(){
+	GPIOC->ODR &= ~(0x01<<8); //turns off LED
+	delay(4*m); //for 3 units
+}
+
+void wordspace(){
+	GPIOC->ODR &= ~(0x01<<8); //turns off LED
+	delay(8*m); //for 7 units
+}
