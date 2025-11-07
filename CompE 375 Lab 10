@@ -1,0 +1,84 @@
+
+#define F_CPU 16000000UL // 16MHz clock from the debug processor
+#define BAUD 9600
+#define BAUDRATE ((F_CPU)/(BAUD * 16UL)-1)
+#define LEDON PORTB |= (1<<5); //turn LED on
+#define LEDOFF PORTB &= ~(1<<5); //turn LED off
+#include <stdlib.h>
+#include <util/delay.h>
+#include <string.h>
+#include <avr/io.h>
+#include <avr/eeprom.h> //eeprom R/W access
+#include <avr/interrupt.h>
+
+
+volatile uint8_t Duty;
+
+ISR(TIMER0_COMPA_vect){
+	if (OCR0B != 0)
+	LEDON;
+}
+
+ISR(TIMER0_COMPB_vect){
+	LEDOFF;
+}
+/*
+void usart_init(void){
+	//stop bit is already initialized as 0
+	UBRR0H = (BAUDRATE >> 8); //shift register by 8 bits
+	UBRR0L = BAUDRATE; // Set baud rate
+	UCSR0B |= (1<<TXEN0)|(1<<RXEN0); // enable receiver and transmitter
+	UCSR0C |= (1 << UCSZ00) | (1 << UCSZ01) | (USBS0);// set the format to 8bit
+	//stop bit is optional in this case bc it is automatically initialized to 0
+}
+
+void uart_transmit(uint8_t* memData){
+	while (!( UCSR0A & (1<<UDRE0)));                // wait while register is free
+	UDR0 = memData;
+	_delay_ms(300);
+}
+
+int main(void)
+{
+	usart_init();
+	
+	uint8_t Data;
+	Data = eeprom_read_byte((uint8_t*)45);		//45 being the memory location 
+	char string[20];	
+	itoa (Data, string, 20);
+	
+	while (1){
+		
+		for(int i = 0; i < strlen(string); i++){ //passes the value in address 454 as char by char to be transmitted to data visualizer
+			uart_transmit(string[i]);
+		}
+		uart_transmit(' ')
+	}
+}
+*/
+int main(void){
+	sei();
+	
+	DDRB |= (1 << DDB5); //output
+	
+	TCCR0A |= (1 << WGM01); //CTC mode
+	TCCR0B |= (1 << CS02) | (1 << CS00); //1024
+	TIMSK0 |= (1 << OCIE0B) | (1 << OCIE0A); //ISR
+	
+	OCR0A = 0x4e; //flag a
+	
+	uint8_t memData = eeprom_read_byte((uint8_t*) 45);
+	
+	if (memData < 0 || memData > 10){
+	eeprom_update_byte((uint8_t*) 45, (uint8_t) 1);
+	Duty = 0;
+	}
+	
+	else{
+	Duty = memData;	
+	eeprom_update_byte((uint8_t*) 45, (uint8_t)(memData + 1));
+	}
+	
+	OCR0B = Duty;
+	while (1){}
+}
